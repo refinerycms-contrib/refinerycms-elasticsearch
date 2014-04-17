@@ -1,0 +1,12 @@
+en:
+  refinery:
+    plugins:
+      elasticsearch:
+        title: Search
+        description: Extra search handling for Refinery CMS
+    elasticsearch:
+      search:
+        show:
+          search_results_for: Search Results for '%{what}'
+          no_results_for: No results found for your search '%{what}'.
+          updated_at: Last updated %{when} ago.
