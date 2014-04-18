@@ -46,4 +46,8 @@ end
 
 ## First-time indexing
 
-Content needs to be indexed in order to be searchable. The extension will automatically update the index whenever a searchable resource is updated.
+Content needs to be indexed in order to be searchable. The extension will automatically update the index whenever a searchable resource is updated. To create an index for the first time, use a rake task:
+
+````
+rake refinery:elasticsearch:recreate
+````
