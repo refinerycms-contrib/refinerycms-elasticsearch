@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.license           = %w{MIT}
   s.summary           = 'Elasticseach support for Refinery CMS'
   s.require_paths     = %w(lib)
-  s.files             = Dir["{app,config,db,lib}/**/*"] + ["readme.md"]
+  s.files             = `git ls-files`.split("\n")
   s.test_files        = `git ls-files -- spec/*`.split("\n")
   s.required_ruby_version = '>= 1.9.3'
 
