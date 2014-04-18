@@ -7,11 +7,13 @@ capybara-*.html
 /public/system
 /coverage/
 /spec/tmp
+/spec/dummy
 **.orig
 rerun.txt
 pickle-email-*.html
 config/initializers/secret_token.rb
 config/secrets.yml
+Gemfile.lock
 
 ## Environment normalisation:
 /.bundle

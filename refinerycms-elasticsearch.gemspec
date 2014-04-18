@@ -3,11 +3,11 @@
 Gem::Specification.new do |s|
   s.platform          = Gem::Platform::RUBY
   s.name              = 'refinerycms-elasticsearch'
-  s.version           = '1.0'
+  s.version           = %q{0.0.1}
   s.description       = 'Elasticseach support for Refinery CMS.'
   s.date              = '2014-04-07'
   s.authors           = ['Christian Aust']
-  s.license           = %w{MIT}
+  s.license           = %q{MIT}
   s.summary           = 'Elasticseach support for Refinery CMS'
   s.require_paths     = %w(lib)
   s.files             = `git ls-files`.split("\n")
