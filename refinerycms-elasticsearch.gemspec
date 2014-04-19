@@ -1,11 +1,10 @@
-# Encoding: UTF-8
+require File.expand_path('../lib/refinery/elasticsearch/version', __FILE__)
 
 Gem::Specification.new do |s|
   s.platform          = Gem::Platform::RUBY
   s.name              = 'refinerycms-elasticsearch'
-  s.version           = %q{0.0.1}
+  s.version           = Refinery::Elasticsearch::VERSION
   s.description       = 'Elasticseach support for Refinery CMS.'
-  s.date              = '2014-04-07'
   s.authors           = ['Christian Aust']
   s.license           = %q{MIT}
   s.summary           = 'Elasticseach support for Refinery CMS'
