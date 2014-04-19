@@ -14,7 +14,7 @@ module Refinery
         if self.respond_to?(:to_index)
           if document = self.to_index
             needs_update = !(self.previous_changes.keys & document.keys).empty?
-            ::Refinery::Elasticsearch.initialized do |client|
+            ::Refinery::Elasticsearch.with_client do |client|
               client.index({
                 index: ::Refinery::Elasticsearch.index_name,
                 type:  self.class.document_type,
@@ -27,7 +27,7 @@ module Refinery
       end
 
       def delete_document
-        ::Refinery::Elasticsearch.initialized do |client|
+        ::Refinery::Elasticsearch.with_client do |client|
           client.delete({
             index: ::Refinery::Elasticsearch.index_name,
             type:  self.class.document_type,
