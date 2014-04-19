@@ -4,7 +4,7 @@ namespace :refinery do
 
     desc 'Delete Elasticsearch index'
     task :delete do
-      ::Refinery::Elasticsearch.client.indices.delete index: ::Refinery::Elasticsearch.index_name
+      ::Refinery::Elasticsearch.delete_index
     end
 
     desc 'Recreate Elasticsearch index'

@@ -25,6 +25,7 @@ module Refinery
       end
 
       config.after_initialize do
+        ::Refinery::Elasticsearch.config.logger ||= Rails.logger
         Refinery.register_extension(Refinery::Elasticsearch)
       end
     end

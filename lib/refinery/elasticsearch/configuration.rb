@@ -1,3 +1,5 @@
+require 'logger'
+
 module Refinery
   module Elasticsearch
     include ActiveSupport::Configurable
@@ -7,6 +9,6 @@ module Refinery
     self.es_host = 'localhost'
     self.es_port = 9200
     self.es_log = false
-    self.es_logger = Rails.logger
+    self.es_logger = Logger.new(STDOUT)
   end
 end

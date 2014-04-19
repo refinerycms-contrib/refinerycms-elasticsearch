@@ -10,8 +10,6 @@ module Refinery
     require 'refinery/elasticsearch/configuration'
 
     class << self
-      attr_writer :root, :client
-
       def index_name
         @index_name ||= ::Refinery::Core.config.site_name.to_slug.normalize.to_s
       end
@@ -20,8 +18,14 @@ module Refinery
         @root ||= Pathname.new(File.expand_path('../../../', __FILE__))
       end
 
-      def client
-        @client ||= ::Elasticsearch::Client.new host:self.es_host, port:self.es_port, log:self.es_log, logger:self.es_logger
+      def features(what=nil)
+        @features ||= with_client{|client| Hashie::Mash.new client.nodes.info }
+        case what
+        when :plugins then
+          @features.nodes.map do |node_name, info|
+            info.plugins.map(&:name)
+          end
+        end
       end
 
       def searchable_classes
@@ -102,17 +106,21 @@ module Refinery
         @setup_completed = true
       end
 
-      def with_client(&block)
+      def with_client
         setup_index unless @setup_completed
-        yield(client) if block_given?
+        yield(client) if @setup_completed && block_given?
       end
 
+      private
+
       def log(severity, message)
-        unless es_logger.nil?
-          es_logger.send severity, message 
-        end
-        puts "*** #{severity.to_s.upcase}: #{message} #{es_logger}"
+        self.es_logger.send(severity, message) unless self.es_logger.nil?
       end
+
+      def client
+        @client ||= ::Elasticsearch::Client.new host:self.es_host, port:self.es_port, trace:false, logger:self.es_logger
+      end
+
     end
   end
 end

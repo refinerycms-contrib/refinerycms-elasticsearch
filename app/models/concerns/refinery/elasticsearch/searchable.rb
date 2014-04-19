@@ -13,6 +13,21 @@ module Refinery
       def index_document
         if self.respond_to?(:to_index)
           if document = self.to_index
+            ::Refinery::Elasticsearch.with_client do |client|
+              client.index({
+                index: ::Refinery::Elasticsearch.index_name,
+                type:  self.class.document_type,
+                id:    self.id,
+                body:  document
+              })
+            end
+          end
+        end
+      end
+
+      def update_document
+        if self.respond_to?(:to_index)
+          if document = self.to_index
             needs_update = !(self.previous_changes.keys & document.keys).empty?
             ::Refinery::Elasticsearch.with_client do |client|
               client.index({
@@ -38,7 +53,7 @@ module Refinery
 
       included do
         after_commit :index_document, on: :create
-        after_commit :index_document, on: :update
+        after_commit :update_document, on: :update
         after_commit :delete_document, on: :destroy
         ::Refinery::Elasticsearch.searchable_classes << self
       end
