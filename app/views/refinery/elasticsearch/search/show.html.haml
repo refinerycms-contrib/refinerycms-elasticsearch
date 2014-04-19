@@ -5,8 +5,6 @@
   - if @results.empty?
     = t('.no_results_for', :what => @query)
   - else
-    = will_paginate @results, renderer:FoundationLinkRenderer
-
     %ul#search_results.no-bullet
       - @results.each do |result|
         %li.result
@@ -22,6 +20,6 @@
             |
             = result_type(result)
 
-    = will_paginate @results, renderer:FoundationLinkRenderer
+    = will_paginate @results
 
 = render "/refinery/content_page"
