@@ -1,6 +1,8 @@
 # Elasticsearch extension for Refinery CMS.
 
-This extension adds full text search capabilities to Refinery CMS.
+This extension adds full text search capabilities to [Refinery CMS](http://refinerycms.com). Indexing and queries are handled by [Elasticsearch](http://www.elasticsearch.org). Elasticsearch is a flexible and powerful open source, distributed, real-time search and analytics engine.
+
+Elasticsearch will easily handle millions of searchable documents even on modest hardware, and can be set up to support really large-scale deployments.
 
 ## Requirements
 
@@ -37,7 +39,7 @@ Refinery::Elasticsearch.configure do |config|
   # config.es_port = 9200
 
   # Should we log elasticsearch queries?
-  # config.es_log = true
+  # config.es_log = false
 
   # Which logger to use?
   # config.es_logger = Rails.logger
@@ -51,3 +53,17 @@ Content needs to be indexed in order to be searchable. The extension will automa
 ````
 rake refinery:elasticsearch:recreate
 ````
+
+# Custom datatypes
+
+To be searchable, data needs to be indexed first. This extension makes sure data is indexed whenever it is created, updated or deleted in the database. By default, data is **not indexed**. To include it into the index, it needs to include the `::Refinery::Elasticsearch::Searchable` module.
+
+## Default datatypes
+
+The extension includes the module into these standard refinery classes:
+
+* `Refinery::Page`
+* `Refinery::Image`
+* `Refinery::Resource`
+
+The page will include all of its parts, with all HTML tags removed from the part content.
