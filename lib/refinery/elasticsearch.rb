@@ -67,11 +67,11 @@ module Refinery
         log :info, "Setting up index #{index_name}"
         opts = {delete_first:false}.merge(opts)
         if opts[:delete_first]
-          delete_index
+          delete_index if client.indices.exists index: index_name
         end
         unless client.indices.exists index: index_name
           client.indices.create index: index_name
-          log :info, "Created index #{index_name}"
+          log :debug, "Created index #{index_name}"
         end
 
         # Update settings
@@ -87,7 +87,7 @@ module Refinery
           }
         }
         client.indices.open index:index_name
-        log :info, "Updated settings for index #{index_name}"
+        log :debug, "Updated settings for index #{index_name}"
 
         # Update mappings
         mappings = {}
@@ -100,7 +100,7 @@ module Refinery
           h = Hash.new
           h[name] = maps
           client.indices.put_mapping index: index_name, type:name, body:h
-          log :info, "Updated mapping for type #{index_name}:#{name}"
+          log :debug, "Updated mapping for type #{index_name}:#{name}"
         end
 
         @setup_completed = true
@@ -111,14 +111,24 @@ module Refinery
         yield(client) if @setup_completed && block_given?
       end
 
-      private
-
       def log(severity, message)
         self.es_logger.send(severity, message) unless self.es_logger.nil?
       end
 
+      private
+
       def client
-        @client ||= ::Elasticsearch::Client.new host:self.es_host, port:self.es_port, trace:false, logger:self.es_logger
+        @client ||= begin
+          opts = {
+            host:self.es_host,
+            port:self.es_port,
+            trace: false
+          }
+          if self.es_log
+            opts[:logger] = self.es_logger
+          end
+          ::Elasticsearch::Client.new opts
+        end
       end
 
     end

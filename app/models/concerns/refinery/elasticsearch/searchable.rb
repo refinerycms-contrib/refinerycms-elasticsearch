@@ -20,6 +20,7 @@ module Refinery
                 id:    self.id,
                 body:  document
               })
+              ::Refinery::Elasticsearch.log(:debug, "Indexed document #{self.id}")
             end
           end
         end
@@ -36,6 +37,7 @@ module Refinery
                 id:    self.id,
                 body:  document
               })
+              ::Refinery::Elasticsearch.log(:debug, "Updated document #{self.id}")
             end if needs_update
           end
         end
@@ -48,6 +50,7 @@ module Refinery
             type:  self.class.document_type,
             id:    self.id
           })
+          ::Refinery::Elasticsearch.log(:debug, "Deleted document #{self.id}")
         end
       end
 
