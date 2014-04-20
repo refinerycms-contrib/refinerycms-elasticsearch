@@ -23,6 +23,7 @@ end
 
 group :test do
   gem 'refinerycms-testing', '~> 2.1.0'
+  gem 'test_after_commit'
 
   platforms :ruby do
     require 'rbconfig'
