@@ -14,6 +14,8 @@ Elasticsearch will easily handle millions of searchable documents even on modest
 
 ## Installation
 
+**2014/04/21: This is a preview, so the gem hasn't been released on rubygems.org yet. Please include it from github if you want to try it. If you don't know how to do that, it probably isn't for you yet.**
+
 Include the gem into your applications Gemfile:
 
     gem "refinerycms-elasticsearch"
