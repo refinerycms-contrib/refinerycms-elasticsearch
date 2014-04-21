@@ -20,7 +20,7 @@ namespace :refinery do
       Refinery::Elasticsearch.setup_index(delete_first:true)
       Refinery::Elasticsearch.searchable_classes.each do |klass|
         STDOUT.write "  Regenerating #{klass} index... "
-        klass.all.each(&:index_document)
+        klass.index_all
         STDOUT.puts "done."
       end
     end

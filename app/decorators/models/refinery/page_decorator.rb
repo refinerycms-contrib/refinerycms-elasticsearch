@@ -33,6 +33,10 @@ begin
       end
     end
 
+    def self.indexable
+      live.in_menu
+    end
+
   end
 rescue NameError
 end
