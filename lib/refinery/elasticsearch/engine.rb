@@ -10,15 +10,16 @@ module Refinery
 
       config.autoload_paths << ::Refinery::Elasticsearch.root.join('app', 'models', 'concerns')
 
-      # before_inclusion do
-      #   Refinery::Plugin.register do |plugin|
-      #     plugin.name = "elasticsearch"
-      #     plugin.pathname = root
-      #     plugin.activity = {
-      #       :class_name => :'refinery/eninet/organization'
-      #     }
-      #   end
-      # end
+      before_inclusion do
+        Refinery::Plugin.register do |plugin|
+          plugin.name = 'elasticsearch'
+          plugin.hide_from_menu = true
+        end
+      end
+
+      initializer "refinery.elasticsearch" do
+        ::Refinery::Elasticsearch.config.es_logger = Rails.logger
+      end
 
       config.to_prepare do
         Decorators.register! ::Refinery::Elasticsearch.root

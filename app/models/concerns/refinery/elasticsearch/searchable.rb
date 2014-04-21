@@ -13,32 +13,50 @@ module Refinery
       def index_document
         if self.respond_to?(:to_index)
           if document = self.to_index
-            needs_update = !(self.previous_changes.keys & document.keys).empty?
-            ::Refinery::Elasticsearch.initialized do |client|
+            ::Refinery::Elasticsearch.with_client do |client|
               client.index({
                 index: ::Refinery::Elasticsearch.index_name,
                 type:  self.class.document_type,
                 id:    self.id,
                 body:  document
               })
+              ::Refinery::Elasticsearch.log(:debug, "Indexed document #{self.id}")
+            end
+          end
+        end
+      end
+
+      def update_document
+        if self.respond_to?(:to_index)
+          if document = self.to_index
+            needs_update = !(self.previous_changes.keys & document.keys).empty?
+            ::Refinery::Elasticsearch.with_client do |client|
+              client.index({
+                index: ::Refinery::Elasticsearch.index_name,
+                type:  self.class.document_type,
+                id:    self.id,
+                body:  document
+              })
+              ::Refinery::Elasticsearch.log(:debug, "Updated document #{self.id}")
             end if needs_update
           end
         end
       end
 
       def delete_document
-        ::Refinery::Elasticsearch.initialized do |client|
+        ::Refinery::Elasticsearch.with_client do |client|
           client.delete({
             index: ::Refinery::Elasticsearch.index_name,
             type:  self.class.document_type,
             id:    self.id
           })
+          ::Refinery::Elasticsearch.log(:debug, "Deleted document #{self.id}")
         end
       end
 
       included do
         after_commit :index_document, on: :create
-        after_commit :index_document, on: :update
+        after_commit :update_document, on: :update
         after_commit :delete_document, on: :destroy
         ::Refinery::Elasticsearch.searchable_classes << self
       end

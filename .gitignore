@@ -7,18 +7,19 @@ capybara-*.html
 /public/system
 /coverage/
 /spec/tmp
+/spec/dummy
 **.orig
 rerun.txt
 pickle-email-*.html
 config/initializers/secret_token.rb
 config/secrets.yml
+Gemfile.lock
 
 ## Environment normalisation:
 /.bundle
 /vendor/bundle
 
-# these should all be checked in to normalise the environment:
-# Gemfile.lock, .ruby-version, .ruby-gemset
+.ruby-*
 
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
 .rvmrc

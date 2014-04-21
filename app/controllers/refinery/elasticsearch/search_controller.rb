@@ -1,5 +1,3 @@
-require 'foundation_link_renderer'
-
 module Refinery
   module Elasticsearch
     class SearchController < ::ApplicationController

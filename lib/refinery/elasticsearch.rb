@@ -1,4 +1,7 @@
 require 'elasticsearch'
+require 'refinery/elasticsearch/version'
+require 'refinery/elasticsearch/result'
+require 'refinery/elasticsearch/results'
 
 module Refinery
   autoload :ElasticsearchGenerator, 'generators/refinery/elasticsearch_generator'
@@ -7,8 +10,6 @@ module Refinery
     require 'refinery/elasticsearch/configuration'
 
     class << self
-      attr_writer :root, :client
-
       def index_name
         @index_name ||= ::Refinery::Core.config.site_name.to_slug.normalize.to_s
       end
@@ -17,8 +18,14 @@ module Refinery
         @root ||= Pathname.new(File.expand_path('../../../', __FILE__))
       end
 
-      def client
-        @client ||= ::Elasticsearch::Client.new host:self.es_host, port:self.es_port, log:self.es_log, logger:self.es_logger
+      def features(what=nil)
+        @features ||= with_client{|client| Hashie::Mash.new client.nodes.info }
+        case what
+        when :plugins then
+          @features.nodes.map do |node_name, info|
+            info.plugins.map(&:name)
+          end
+        end
       end
 
       def searchable_classes
@@ -27,68 +34,106 @@ module Refinery
 
       def search(query, opts={})
         opts = opts.reverse_merge page:1, per_page:10
-        Results.new client.search(
-          index:index_name,
-          from:((opts[:page]-1) * opts[:per_page]),
-          size:opts[:per_page],
-          analyzer:'snowball_en',
-          body: {
-            query: {
-              query_string: {
-                default_field:'_all',
-                query: query
-              }
-            },
-            highlight: {
-              fields: {
-                '*' => {}
+        results = with_client do |client|
+          client.search(
+            index:index_name,
+            from:((opts[:page]-1) * opts[:per_page]),
+            size:opts[:per_page],
+            analyzer:'snowball_en',
+            body: {
+              query: {
+                query_string: {
+                  default_field:'_all',
+                  query: query
+                }
+              },
+              highlight: {
+                fields: {
+                  '*' => {}
+                }
               }
             }
-          }
-        ), page:opts[:page], page_size:opts[:per_page]
+          )
+        end
+        Results.new results, page:opts[:page], page_size:opts[:per_page]
       end
 
       def delete_index
         client.indices.delete index: index_name
+        log :info, "Deleted index #{index_name}"
       end
 
       def setup_index(opts={})
+        log :info, "Setting up index #{index_name}"
         opts = {delete_first:false}.merge(opts)
-        delete_index if opts[:delete_first]
-        unless client.indices.exists index: index_name
-          mappings = {}
-          searchable_classes.each do |klass|
-            if m = klass.mapping
-              mappings[klass.document_type] = {properties: m}
-            end
-          end
-          client.indices.create index: index_name,
-            body: {
-              settings: {
-                analysis: {
-                  analyzer: {
-                    snowball_en: {
-                      type: 'snowball',
-                      language: 'English'
-                    }
-                  }
-                }
-              },
-              mappings:mappings
-            }
+        if opts[:delete_first]
+          delete_index if client.indices.exists index: index_name
         end
+        unless client.indices.exists index: index_name
+          client.indices.create index: index_name
+          log :debug, "Created index #{index_name}"
+        end
+
+        # Update settings
+        client.indices.close index:index_name
+        client.indices.put_settings index:index_name, body:{
+          analysis: {
+            analyzer: {
+              snowball_en: {
+                type: 'snowball',
+                language: 'English'
+              }
+            }
+          }
+        }
+        client.indices.open index:index_name
+        log :debug, "Updated settings for index #{index_name}"
+
+        # Update mappings
+        mappings = {}
+        searchable_classes.each do |klass|
+          if m = klass.mapping
+            mappings[klass.document_type] = {properties: m}
+          end
+        end
+        mappings.each do |name, maps|
+          h = Hash.new
+          h[name] = maps
+          client.indices.put_mapping index: index_name, type:name, body:h
+          log :debug, "Updated mapping for type #{index_name}:#{name}"
+        end
+
         @setup_completed = true
       end
 
-      def initialized(&block)
+      def with_client
         setup_index unless @setup_completed
-        yield(client) if block_given?
+        yield(client) if @setup_completed && block_given?
       end
+
+      def log(severity, message)
+        self.es_logger.send(severity, message) unless self.es_logger.nil?
+      end
+
+      private
+
+      def client
+        @client ||= begin
+          opts = {
+            host:self.es_host,
+            port:self.es_port,
+            trace: false
+          }
+          if self.es_log
+            opts[:logger] = self.es_logger
+          end
+          ::Elasticsearch::Client.new opts
+        end
+      end
+
     end
   end
 end
 
 require 'refinery/elasticsearch/engine'
-require 'refinery/elasticsearch/result'
-require 'refinery/elasticsearch/results'
 
