@@ -26,9 +26,11 @@ rails generate refinery:elasticsearch
 rake db:seed
 ````
 
+The gem doesn't have migrations since it does not change your database. It will however create a search page at the link `/search` which will perform the search and display results.
+
 ## Configuration
 
-The generator will place an initializer into you apps `config/initializers` directory. It will provide examples for what can be set from the configuration, as well as default values.
+The generator will place an initializer into you apps `config/initializers` directory. It will provide examples for what can be configured, as well as default values.
 
 ````
 Refinery::Elasticsearch.configure do |config|
@@ -54,16 +56,53 @@ Content needs to be indexed in order to be searchable. The extension will automa
 rake refinery:elasticsearch:recreate
 ````
 
-# Custom datatypes
+## Search form
 
-To be searchable, data needs to be indexed first. This extension makes sure data is indexed whenever it is created, updated or deleted in the database. By default, data is **not indexed**. To include it into the index, it needs to include the `::Refinery::Elasticsearch::Searchable` module.
+By default, the gem won't include anything in your views so there's no search form to initiate a search. Include something along these lines where appropriate:
+
+````
+<%= form_tag refinery.elasticsearch_search_path, method: :get do %>
+  <input type="search" name="q" placeholder="Find Stuff">
+  <button type="submit">Search</button>
+<% end %>
+````
+
+The query parameter is named `q`.
+
+# Datatypes
+
+By default, data is **not indexed**. To include it into the index, it needs to include the `::Refinery::Elasticsearch::Searchable` module as well as a `to_index` instance method. This module makes sure data is indexed whenever it is created, updated or deleted in the database. A common pattern is to use a [decorator](http://refinerycms.com/guides/extending-models) to dynamically include the module into an existing class.
+
+````
+begin
+  Refinery::Image.class_eval do
+    include ::Refinery::Elasticsearch::Searchable
+    
+    # this is optional
+    mapping do
+      # ...
+    end
+    
+    def to_index
+      # ...
+    end
+  end
+rescue NameError
+end
+````
+
+The `to_index` method translates your model into a hash which will be put into the index. It can handle as many properties as needed. By default, Elasticsearch will treat every value as string. If that's not what you wish, add a [mapping definition](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping.html) to your class which describes datatypes for each property so Elasticsearch can handle them properly.
 
 ## Default datatypes
 
-The extension includes the module into these standard refinery classes:
+The extension includes the module as well as mappings into these standard refinery classes:
 
 * `Refinery::Page`
 * `Refinery::Image`
 * `Refinery::Resource`
 
 The page will include all of its parts, with all HTML tags removed from the part content.
+
+## Add your own
+
+It's easy to add your own data to the index using a pattern as shown above. Simply create a decorator which includes the `Searchable` module and defines the `to_index` method as well as a mapping block.
