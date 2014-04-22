@@ -71,6 +71,7 @@ module Refinery
         end
         unless client.indices.exists index: index_name
           client.indices.create index: index_name
+          client.indices.open index:index_name
           log :debug, "Created index #{index_name}"
         end
 
