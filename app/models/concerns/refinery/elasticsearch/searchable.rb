@@ -18,7 +18,7 @@ module Refinery
                 index: ::Refinery::Elasticsearch.index_name,
                 type:  self.class.document_type,
                 id:    self.id,
-                body:  document
+                body:  document.reject{|k, v| v.nil?}
               })
               ::Refinery::Elasticsearch.log(:debug, "Indexed document #{self.id}")
             end
@@ -35,7 +35,7 @@ module Refinery
                 index: ::Refinery::Elasticsearch.index_name,
                 type:  self.class.document_type,
                 id:    self.id,
-                body:  document
+                body:  document.reject{|k, v| v.nil?}
               })
               ::Refinery::Elasticsearch.log(:debug, "Updated document #{self.id}")
             end if needs_update
