@@ -4,8 +4,9 @@ begin
 
     define_mapping do
       {
-        title: { type:'string', boost:2.0 },
+        title: { type:'string', boost:1.5 },
         file_name: { type:'string', index:'not_analyzed' },
+        url: { type:'string', index:'not_analyzed' },
         created_at: { type:'date' },
         updated_at: { type:'date' },
       }
@@ -15,6 +16,7 @@ begin
       {
         title:self.title,
         file_name:self.image.name,
+        url:self.url,
         created_at:self.created_at,
         updated_at:self.updated_at
       }

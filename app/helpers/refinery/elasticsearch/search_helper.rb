@@ -25,7 +25,7 @@ module Refinery
       end
 
       def result_url(result)
-        return refinery.url_for(result._url) if result.respond_to?(:_url)
+        return refinery.url_for(result.url) if result.respond_to?(:url)
         return nil if result.record.nil?
         refinery.url_for refinery.send(Refinery.route_for_model(result.klass, :admin => false), result.record)
       end
