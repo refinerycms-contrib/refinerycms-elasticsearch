@@ -16,7 +16,7 @@ module Refinery
       end
 
       def record
-        @record ||= klass.where(id:@result['_id']).first
+        @record ||= klass.find(@result['_id']) rescue nil
       end
 
       # Delegate methods to `@result` or `@result._source`
