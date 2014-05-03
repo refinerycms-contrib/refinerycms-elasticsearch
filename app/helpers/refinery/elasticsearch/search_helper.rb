@@ -19,6 +19,7 @@ module Refinery
 
       def result_title(result)
         return result.display_title if result.respond_to?(:display_title)
+        return result.fullname if result.respond_to?(:fullname)
         return result.title if result.respond_to?(:title)
         result.record.title || result.record.to_s
       end
