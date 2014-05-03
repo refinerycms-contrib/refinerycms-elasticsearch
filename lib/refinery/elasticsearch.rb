@@ -81,6 +81,12 @@ module Refinery
           analysis: {
             analyzer: {
               snowball_en: {
+                tokenizer: 'standard',
+                filter: %w{standard lowercase snowball_en}
+              }
+            },
+            filter: {
+              snowball_en: {
                 type: 'snowball',
                 language: 'English'
               }
