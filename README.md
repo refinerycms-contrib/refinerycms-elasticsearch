@@ -93,9 +93,13 @@ rescue NameError
 end
 ````
 
-The `to_index` method translates your model into a hash which will be put into the index. It can handle as many properties as needed. By default, Elasticsearch will treat every value as string. If that's not what you wish, add a [mapping definition](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping.html) to your class which describes datatypes for each property so Elasticsearch can handle them properly.
+The `to_index` method translates your model into a hash which will be put into the index. It can handle as many properties as needed. By default, Elasticsearch will treat every value as string. If that's not what you wish, add a [mapping definition](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping.html) to your class which describes datatypes for each property so Elasticsearch can handle them properly. There are [default mapping types](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/mapping-types.html) available, depending on plugins installed on your Elasticsearch instance there might be more.
 
-## Default datatypes
+### File indexing
+
+If the [mapper attachments plugin](https://github.com/elasticsearch/elasticsearch-mapper-attachments) is installed, various binary file formats can be directly stored into the index. The plugin uses [Apache Tika](http://tika.apache.org) to read the file, please see [the Tika documentation](http://tika.apache.org/1.5/formats.html#Supported_Document_Formats) for a list of supported document formats.
+
+## Default Refinery classes
 
 The extension includes the module as well as mappings into these standard refinery classes:
 
