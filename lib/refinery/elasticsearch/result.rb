@@ -16,7 +16,7 @@ module Refinery
       end
 
       def record
-        @record ||= klass.find(@result['_id']) rescue nil
+        @record ||= klass.find(@result['_id'].to_i) rescue nil
       end
 
       # Delegate methods to `@result` or `@result._source`
