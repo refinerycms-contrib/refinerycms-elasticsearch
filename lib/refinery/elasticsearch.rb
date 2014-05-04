@@ -32,27 +32,54 @@ module Refinery
         @searchable_classes ||= []
       end
 
+      def search_filter
+        a = searchable_classes.collect do |klass|
+          if klass.respond_to?(:search_filter)
+            f = klass.search_filter
+          end
+        end.compact
+        return nil if a.empty?
+        Hash[a]
+      end
+
       def search(query, opts={})
         opts = opts.reverse_merge page:1, per_page:10
         results = with_client do |client|
+          body = {
+            query:{},
+            highlight: {
+              fields: {
+                '*' => {}
+              }
+            }
+          }
+          if f = search_filter
+            # filtered_query
+            body[:query][:filtered] = {
+              query: {
+                query_string: {
+                  default_field:'_all',
+                  analyzer:'snowball_en',
+                  query: query
+                }
+              },
+              filter:f
+            }
+          else
+            body[:query] = {
+              query_string: {
+                default_field:'_all',
+                analyzer:'snowball_en',
+                query: query
+              }
+            }
+          end
+          log :debug, "Query body: #{body}"
           client.search(
             index:index_name,
             from:((opts[:page]-1) * opts[:per_page]),
             size:opts[:per_page],
-            analyzer:'snowball_en',
-            body: {
-              query: {
-                query_string: {
-                  default_field:'_all',
-                  query: query
-                }
-              },
-              highlight: {
-                fields: {
-                  '*' => {}
-                }
-              }
-            }
+            body:body
           )
         end
         Results.new results, page:opts[:page], page_size:opts[:per_page]
