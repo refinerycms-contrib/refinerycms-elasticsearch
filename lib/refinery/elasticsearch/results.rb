@@ -19,11 +19,11 @@ module Refinery
       end
 
       def max_score
-        response['hits']['max_score'] if response['hits']
+        response['hits'] ? response['hits']['max_score'] : 0.0
       end
 
       def total
-        response['hits']['total']
+        response['hits'] ? response['hits']['total'] : 0
       end
 
       def total_pages

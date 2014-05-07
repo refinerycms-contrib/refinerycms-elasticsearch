@@ -1,15 +1,15 @@
 - content_for :body_content_title do
-  = t('.search_results_for', :what => @query)
+  = t('.search_results_for', count:@results.total, what:@query)
 
 - content_for :body do
   - if @results.empty?
-    = t('.no_results_for', :what => @query)
+    = t('.no_results_for', what:@query)
   - else
     %ul#search_results.no-bullet
       - @results.each do |result|
         %li.result
           .header
-            = link_to result_url(result) do
+            = link_to refinery.url_for(result_url(result)) do
               = result_icon(result)
               = result_title(result).html_safe
           = result_highlight(result)

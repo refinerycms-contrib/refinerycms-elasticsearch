@@ -7,6 +7,8 @@ en:
     elasticsearch:
       search:
         show:
-          search_results_for: Search Results for '%{what}'
-          no_results_for: No results found for your search '%{what}'.
-          updated_at: Last updated %{when} ago.
+          search_results_for:
+            one: '1 result for "%{what}"'
+            other: '%{count} results for "%{what}"'
+          no_results_for: 'No results found for your search "%{what}".'
+          updated_at: 'Last updated %{when} ago.'
