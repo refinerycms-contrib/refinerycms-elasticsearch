@@ -8,7 +8,7 @@ begin
         file_name: { type:'string', index:'not_analyzed' },
         url: { type:'string', index:'not_analyzed' },
         created_at: { type:'date' },
-        updated_at: { type:'date' },
+        updated_at: { type:'date' }
       }
     end
 

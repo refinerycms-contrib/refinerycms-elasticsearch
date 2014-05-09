@@ -7,7 +7,7 @@ begin
         title: { type:'string', boost:2.0 },
         file_name: { type:'string', index:'not_analyzed' },
         created_at: { type:'date' },
-        updated_at: { type:'date' },
+        updated_at: { type:'date' }
       }
     end
 

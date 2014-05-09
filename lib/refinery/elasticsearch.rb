@@ -59,7 +59,6 @@ module Refinery
               query: {
                 query_string: {
                   default_field:'_all',
-                  analyzer:'snowball_en',
                   query: query
                 }
               },
@@ -69,7 +68,6 @@ module Refinery
             body[:query] = {
               query_string: {
                 default_field:'_all',
-                analyzer:'snowball_en',
                 query: query
               }
             }
@@ -102,26 +100,27 @@ module Refinery
           log :debug, "Created index #{index_name}"
         end
 
-        # Update settings
-        client.indices.close index:index_name
-        client.indices.put_settings index:index_name, body:{
-          analysis: {
-            analyzer: {
-              snowball_en: {
-                tokenizer: 'standard',
-                filter: %w{standard lowercase snowball_en}
-              }
-            },
-            filter: {
-              snowball_en: {
-                type: 'snowball',
-                language: 'English'
-              }
-            }
-          }
-        }
-        client.indices.open index:index_name
-        log :debug, "Updated settings for index #{index_name}"
+        # # Update settings
+        # client.indices.close index:index_name
+        # client.indices.put_settings index:index_name, body:{
+        #   analysis: {
+        #     analyzer: {
+        #       default: {
+        #         type:'standard'
+        #       }
+        #       index_analyzer: {
+        #         tokenizer: 'standard',
+        #         filter: %w{standard lowercase stop}
+        #       },
+        #       search_analyzer: {
+        #         tokenizer: 'standard',
+        #         filter: %w{standard lowercase stop}
+        #       }
+        #     }
+        #   }
+        # }
+        # client.indices.open index:index_name
+        # log :debug, "Updated settings for index #{index_name}"
 
         # Update mappings
         mappings = {}
@@ -142,7 +141,11 @@ module Refinery
 
       def with_client
         setup_index unless @setup_completed
-        yield(client) if @setup_completed && block_given?
+        if @setup_completed && block_given?
+          yield(client)
+        else
+          log :error, "Setup did not complete"
+        end
       end
 
       def log(severity, message)
@@ -154,8 +157,9 @@ module Refinery
       def client
         @client ||= begin
           opts = {
-            host:self.es_host,
-            port:self.es_port,
+            host:  self.es_host,
+            port:  self.es_port,
+            log:   false,
             trace: false
           }
           if self.es_log

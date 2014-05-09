@@ -4,18 +4,18 @@ begin
 
     define_mapping do
       {
-        title: { type:'string', analyzer:'snowball_en', boost:2.0 },
+        title: { type:'string', boost:2.0 },
         browser_title: { type:'string' },
         menu_title: { type:'string' },
-        meta_description: { type:'string', analyzer:'snowball_en' }, #analyzer:'snowball_en' },
+        meta_description: { type:'string' },
         part: {
           type:'object',
           properties: {
-            body: { type:'string', analyzer:'snowball_en' }, #analyzer:'snowball_en' }
+            body: { type:'string', analyzer:'snowball' }
           }
         },
         created_at: { type:'date' },
-        updated_at: { type:'date' },
+        updated_at: { type:'date' }
       }
     end
 
