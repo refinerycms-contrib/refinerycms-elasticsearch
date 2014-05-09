@@ -2,20 +2,26 @@ module Refinery
   module Elasticsearch
     class Results
       attr_accessor :page_size
-      attr_reader :response
+      attr_reader :response, :options
 
       include Enumerable
 
+      DEFAULTS = {
+        page_size: 10,
+        page: 1
+      }
+
       delegate :each, :empty?, :size, :slice, :[], :to_ary, to: :results
 
-      def initialize(response, opts={})
+      def initialize(response={}, opts={})
+        @options = DEFAULTS.merge(opts)
         @response = response
-        @page_size = opts[:page_size]
-        @current_page = opts[:page]
+        @page_size = @options[:page_size]
+        @current_page = @options[:page]
       end
 
       def results
-        @results ||= response['hits']['hits'].map { |hit| Result.new(hit) }
+        @results ||= response['hits'] ? response['hits']['hits'].map { |hit| Result.new(hit) } : []
       end
 
       def max_score
