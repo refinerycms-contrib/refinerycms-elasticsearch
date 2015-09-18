@@ -7,7 +7,7 @@ Elasticsearch will easily handle millions of searchable documents even on modest
 ## Requirements
 
 * Ruby 1.9 or higher
-* Refinery CMS 2.x (tested w/ 2.1.x)
+* Refinery CMS 2.x+ (tested w/ 2.1.x and 3.0.x)
 * Elasticsearch 1.0 or higher
 * optional: Elasticsearch [Mapper Attachments](https://github.com/elasticsearch/elasticsearch-mapper-attachments) plugin
 * libcurl http bindings
@@ -79,12 +79,12 @@ By default, data is **not indexed**. To include it into the index, it needs to i
 begin
   Refinery::Image.class_eval do
     include ::Refinery::Elasticsearch::Searchable
-    
+
     # this is optional
     mapping do
       # ...
     end
-    
+
     def to_index
       # ...
     end
