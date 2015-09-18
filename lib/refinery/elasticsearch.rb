@@ -4,7 +4,7 @@ require 'refinery/elasticsearch/result'
 require 'refinery/elasticsearch/results'
 
 module Refinery
-  autoload :ElasticsearchGenerator, 'generators/refinery/elasticsearch_generator'
+  autoload :ElasticsearchGenerator, 'generators/refinery/elasticsearch/elasticsearch_generator'
 
   module Elasticsearch
     require 'refinery/elasticsearch/configuration'
