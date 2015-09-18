@@ -4,11 +4,14 @@ module Refinery
   module Elasticsearch
     include ActiveSupport::Configurable
 
-    config_accessor :es_host, :es_port, :es_log, :es_logger
+    config_accessor :es_host, :es_port, :es_log, :es_logger,
+                    :page_url
 
     self.es_host = 'localhost'
     self.es_port = 9200
     self.es_log = false
     self.es_logger = Logger.new(STDOUT)
+
+    self.page_url = '/search'
   end
 end

@@ -10,7 +10,7 @@ module Refinery
         flash[:alert] = 'Search engine is unavailable, please try again later'
       ensure
         @results ||= Results.new
-        present(@page = Refinery::Page.find_by_link_url("/search"))
+        present(@page = Refinery::Page.find_by(link_url: Refinery::Elasticsearch.page_url))
       end
     end
   end
