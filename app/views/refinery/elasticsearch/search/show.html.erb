@@ -1,32 +1,36 @@
 <% content_for :body_content_title do %>
-    <%= t('.search_results_for', count: @results.total, what: @query) %>
+  <%= t('.search_results_for', count: @results.total, what: @query) %>
 <% end %>
 
 <%= content_for(:body) do %>
-    <% if @results.empty? %>
-        <%= t('.no_results_for', what: @query) %>
-    <% else %>
-        <ul id="search-results" class="no-bullet">
-            <% @results.each do |result| %>
-                <li class="result">
-                    <div class="header">
-                        <%= link_to refinery.url_for(result_url(result)) do %>
-                            <%= result_icon(result) %>
-                            <%= result_title(result).html_safe %>
-                        <% end %>
-                        <%= result_highlight(result) %>
-                        <div class="meta">
-                            <%= (result._score/@results.max_score*100.0).round %>%
-                            |
-                            <%= t('.updated_at', when: time_ago_in_words(DateTime.parse(result.updated_at))) %>
-                            |
-                            <%= result_type(result) %>
-                        </div>
-                    </div>
-                </li>
+  <% if @results.empty? %>
+    <%= t('.no_results_for', what: @query) %>
+  <% else %>
+    <ul id="search-results">
+      <% @results.each do |result| %>
+        <li class="result">
+          <div class="header">
+            <%= link_to result_url(result) do %>
+              <%= result_icon(result) %>
+              <%= result_title(result).html_safe %>
             <% end %>
-        </ul>
-    <% end %>
-<% end %>
-<%= render '/refinery/content_page' %>
 
+            <%= result_highlight(result) %>
+
+            <div class="meta">
+              <%= t('.score', score: result_score(result, @results) ) %>
+              |
+              <%= t('.updated_at', when: time_ago_in_words(DateTime.parse(result.updated_at))) %>
+              |
+              <%= result_type(result) %>
+            </div>
+
+          </div>
+        </li>
+      <% end %>
+    </ul>
+    <%= will_paginate @results %>
+  <% end %>
+<% end %>
+
+<%= render '/refinery/content_page' %>
