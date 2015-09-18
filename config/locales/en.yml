@@ -8,7 +8,13 @@ en:
       search:
         show:
           search_results_for:
+            zero: 'No results found for your search "%{what}".'
             one: '1 result for "%{what}"'
             other: '%{count} results for "%{what}"'
           no_results_for: 'No results found for your search "%{what}".'
           updated_at: 'Last updated %{when} ago.'
+          score: '%{score}%'
+    shared:
+      search:
+        search_site_for: "Search site for..."
+        go: "Go"
