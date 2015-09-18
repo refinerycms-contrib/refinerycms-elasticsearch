@@ -5,7 +5,7 @@ module Refinery
     include ActiveSupport::Configurable
 
     config_accessor :es_host, :es_port, :es_log, :es_logger,
-                    :page_url
+                    :enable_for, :page_url, :results_per_page
 
     self.es_host = 'localhost'
     self.es_port = 9200
@@ -13,5 +13,11 @@ module Refinery
     self.es_logger = Logger.new(STDOUT)
 
     self.page_url = '/search'
+    self.results_per_page = 10
+    self.enable_for = %w{ Refinery::Page Refinery::Image Refinery::Resource }
+
+    if defined?(Refinery::Blog)
+      self.enable_for << 'Refinery::Blog::Post'
+    end
   end
 end
