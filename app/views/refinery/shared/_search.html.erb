@@ -1,0 +1,10 @@
+<%= form_tag refinery.elasticsearch_search_path, method: :get, class: 'search' do %>
+  <%= label_tag :q, t('search_label', scope: 'header'), class: 'visuallyhidden' %>
+  <%= text_field_tag :q, {}, {type: "search", placeholder: t('header.btn_search_label'), value: (params[:query] if params[:query])} %>
+  <%= button_tag(type: 'submit') do %>
+    <i class="fa fa-search"></i>
+    <span class="visuallyhidden">
+      <%= t('header.btn_search_label') %>
+    </span>
+  <% end %>
+<% end %>
