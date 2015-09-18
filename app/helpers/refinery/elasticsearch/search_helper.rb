@@ -39,6 +39,10 @@ module Refinery
         end if result.has_highlight?
       end
 
+      def result_mark(field)
+        field.gsub /(#{Regexp.escape(@query)})/i, '<mark>\1</mark>'
+      end
+
       def result_score(result, results)
         ( result._score / results.max_score * 100.0 ).round
       end
