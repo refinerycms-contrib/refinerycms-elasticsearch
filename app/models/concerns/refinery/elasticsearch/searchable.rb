@@ -58,7 +58,7 @@ module Refinery
         after_commit :index_document, on: :create
         after_commit :update_document, on: :update
         after_commit :delete_document, on: :destroy
-        ::Refinery::Elasticsearch.searchable_classes << self
+        ::Refinery::Elasticsearch.searchable_classes << self if Refinery::Elasticsearch.enable_for.include?(self.to_s)
       end
 
       module ClassMethods
@@ -84,7 +84,7 @@ module Refinery
           indexable.find_in_batches(batch_size:100) do |group|
             bulk_data = group.map do |e|
               [
-                { index: { _index: ::Refinery::Elasticsearch.index_name, _type:self.document_type, _id:e.id } }, 
+                { index: { _index: ::Refinery::Elasticsearch.index_name, _type:self.document_type, _id:e.id } },
                 e.to_index
               ]
             end.flatten

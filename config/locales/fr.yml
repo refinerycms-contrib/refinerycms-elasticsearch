@@ -1,0 +1,20 @@
+fr:
+  refinery:
+    plugins:
+      refinery_elasticsearch:
+        title: Recherche
+        description: Recherchez dans Refinery CMS avec Elasticsearch
+    elasticsearch:
+      search:
+        show:
+          search_results_for:
+            zero: 'Aucun résultat pour votre recherche "%{what}".'
+            one: '1 résultat pour "%{what}"'
+            other: '%{count} résultats pour "%{what}"'
+          no_results_for: 'Aucun résultat pour votre recherche "%{what}".'
+          updated_at: 'Mis à jour il y a %{when}.'
+          score: '%{score}%'
+    shared:
+      search:
+        search_site_for: "Search site for..."
+        go: "Go"

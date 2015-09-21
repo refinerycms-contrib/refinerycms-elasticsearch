@@ -7,7 +7,7 @@ module Refinery
       include Enumerable
 
       DEFAULTS = {
-        page_size: 10,
+        page_size: Refinery::Elasticsearch.results_per_page,
         page: 1
       }
 

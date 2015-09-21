@@ -1,13 +1,13 @@
 require 'elasticsearch'
-require 'refinery/elasticsearch/version'
-require 'refinery/elasticsearch/result'
-require 'refinery/elasticsearch/results'
 
 module Refinery
-  autoload :ElasticsearchGenerator, 'generators/refinery/elasticsearch_generator'
+  autoload :ElasticsearchGenerator, 'generators/refinery/elasticsearch/elasticsearch_generator'
 
   module Elasticsearch
     require 'refinery/elasticsearch/configuration'
+    require 'refinery/elasticsearch/version'
+    require 'refinery/elasticsearch/result'
+    require 'refinery/elasticsearch/results'
 
     class << self
       def index_name
@@ -43,7 +43,7 @@ module Refinery
       end
 
       def search(query, opts={})
-        opts = opts.reverse_merge page:1, per_page:10
+        opts = opts.reverse_merge page:1, per_page: Refinery::Elasticsearch.results_per_page
         results = with_client do |client|
           body = {
             query:{},

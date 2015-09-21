@@ -11,4 +11,8 @@ Refinery::Elasticsearch.configure do |config|
 
   # Which logger to use?
   # config.es_logger = Rails.logger
+
+  # config.enable_for = <%= Refinery::Elasticsearch.enable_for.inspect %>
+  # config.page_url = <%= Refinery::Elasticsearch.page_url.inspect %>
+  # config.results_per_page = <%= Refinery::Elasticsearch.results_per_page.inspect %>
 end
