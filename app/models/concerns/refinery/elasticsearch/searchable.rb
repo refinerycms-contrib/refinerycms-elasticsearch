@@ -48,7 +48,8 @@ module Refinery
           client.delete({
             index: ::Refinery::Elasticsearch.index_name,
             type:  self.class.document_type,
-            id:    self.id
+            id:    self.id,
+            ignore: 404
           })
           ::Refinery::Elasticsearch.log(:debug, "Deleted document #{self.id}")
         end
