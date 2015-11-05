@@ -56,19 +56,23 @@ module Refinery
           if f = search_filter
             # filtered_query
             body[:query][:filtered] = {
-              query: {
-                query_string: {
-                  default_field:'_all',
-                  query: query
+              match: {
+                _all: {
+                  query: query , 
+                  fuzziness: 2,
+                  prefix_length: 1
                 }
               },
               filter:f
             }
           else
             body[:query] = {
-              query_string: {
-                default_field:'_all',
-                query: query
+              match: {
+                _all: {
+                  query: query , 
+                  fuzziness: 2,
+                  prefix_length: 1
+                }
               }
             }
           end
@@ -95,32 +99,20 @@ module Refinery
           delete_index if client.indices.exists index: index_name
         end
         unless client.indices.exists index: index_name
-          client.indices.create index: index_name
+          if !Refinery::Elasticsearch.es_custom_analysis.empty?
+            client.indices.create index: index_name, body:{
+              analysis: {
+                Refinery::Elasticsearch.es_custom_analysis                
+              }
+            }
+          else
+            client.indices.create index: index_name
+          end
+
           client.indices.open index:index_name
+          
           log :debug, "Created index #{index_name}"
         end
-
-        # # Update settings
-        # client.indices.close index:index_name
-        # client.indices.put_settings index:index_name, body:{
-        #   analysis: {
-        #     analyzer: {
-        #       default: {
-        #         type:'standard'
-        #       }
-        #       index_analyzer: {
-        #         tokenizer: 'standard',
-        #         filter: %w{standard lowercase stop}
-        #       },
-        #       search_analyzer: {
-        #         tokenizer: 'standard',
-        #         filter: %w{standard lowercase stop}
-        #       }
-        #     }
-        #   }
-        # }
-        # client.indices.open index:index_name
-        # log :debug, "Updated settings for index #{index_name}"
 
         # Update mappings
         mappings = {}

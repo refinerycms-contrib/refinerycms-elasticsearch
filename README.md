@@ -47,7 +47,64 @@ Refinery::Elasticsearch.configure do |config|
 
   # Which logger to use?
   # config.es_logger = Rails.logger
+
+  # Elasticsearch custom analysis
+  # config.es_custom_analysis = {}
+
+  # config.enable_for = ["Refinery::Page", "Refinery::Image", "Refinery::Resource"]
+  # config.page_url = "/search"
+  # config.results_per_page = 10
 end
+````
+
+Example of custom Elasticsearch Analysis :
+
+````
+config.es_custom_analysis = {
+  analyzer: {
+    default: {
+      tokenizer: "standard",
+      filter: ["snowball_fr", "lowercase", "my_ascii_folding", "stopwords_fr", "elision", "worddelimiter", "my_german_normalization", "my_ngram"],
+      char_filter: ["html_strip"]
+    },
+    english: {
+      tokenizer: "standard",
+      filter: ["snowball", "lowercase", "my_ascii_folding", "stopwords", "elision", "worddelimiter", "my_german_normalization", "my_ngram"],
+      char_filter: ["html_strip"]
+    }
+  },
+  filter: {
+    my_ascii_folding: {
+      type: "asciifolding",
+      preserve_original: true
+    },
+    my_german_normalization: {
+      type: "german_normalization",
+      preserve_original: true
+    },
+    my_ngram: {
+      type: "nGram",
+      min_gram: 2,
+      max_gram: 50
+    },
+    snowball_fr: {
+      type: 'snowball',
+      language: 'French'
+    },
+    elision: {
+      type: 'elision',
+      articles: %w{l m t qu n s j d}
+    },
+    stopwords_fr: {
+      type: 'stop',
+      stopwords: '_french_',
+      ignore_case: true
+    },
+    worddelimiter: {
+      type: 'word_delimiter'
+    }
+  }  
+}
 ````
 
 ## First-time indexing
