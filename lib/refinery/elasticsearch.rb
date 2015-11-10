@@ -101,9 +101,7 @@ module Refinery
         unless client.indices.exists index: index_name
           if !Refinery::Elasticsearch.es_custom_analysis.empty?
             client.indices.create index: index_name, body:{
-              analysis: {
-                Refinery::Elasticsearch.es_custom_analysis                
-              }
+              analysis: Refinery::Elasticsearch.es_custom_analysis
             }
           else
             client.indices.create index: index_name
