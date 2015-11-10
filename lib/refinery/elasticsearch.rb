@@ -1,13 +1,5 @@
 require 'elasticsearch'
 
-unless String.method_defined? :to_slug
-  String.class_eval do
-    def to_slug
-      self.downcase.strip.gsub(' ', '-').gsub(/[^\w-]/, '')
-    end
-  end
-end
-
 module Refinery
   autoload :ElasticsearchGenerator, 'generators/refinery/elasticsearch/elasticsearch_generator'
 
@@ -19,7 +11,7 @@ module Refinery
 
     class << self
       def index_name
-        @index_name ||= ::Refinery::Core.config.site_name.to_slug.to_s
+        @index_name ||= ::Refinery::Core.config.site_name.to_slug.normalize!
       end
 
       def root
