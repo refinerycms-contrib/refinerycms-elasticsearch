@@ -29,7 +29,7 @@ module Refinery
       def update_document
         if self.respond_to?(:to_index)
           if document = self.to_index
-            needs_update = !(self.previous_changes.keys.map(&:to_sym) & document.keys.map(&:to_sym)).empty?
+            needs_update = !(self.previous_changes.keys.map(&:to_sym) && document.keys.map(&:to_sym)).empty?
             ::Refinery::Elasticsearch.with_client do |client|
               client.index({
                 index: ::Refinery::Elasticsearch.index_name,
