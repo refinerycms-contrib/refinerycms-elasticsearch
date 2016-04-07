@@ -52,6 +52,7 @@ module Refinery
 
       module ClassMethods
         def indexable
+          return all if Rails.version.split('.').first.to_i >= 4
           # this is meant as a relation which includes all elements. In Rails <4.0
           # the `all` class method does not return a relation but an array.
           where('1=1')
