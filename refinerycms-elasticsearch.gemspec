@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version           = Refinery::Elasticsearch::VERSION
   s.description       = 'Elasticseach support for Refinery CMS.'
   s.authors           = ['Christian Aust']
-  s.license           = %q{MIT}
+  s.license           = 'MIT'
   s.summary           = 'Elasticseach support for Refinery CMS'
   s.require_paths     = %w(lib)
   s.files             = `git ls-files`.split("\n")

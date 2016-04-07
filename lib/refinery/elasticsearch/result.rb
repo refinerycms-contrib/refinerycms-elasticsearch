@@ -3,7 +3,7 @@ require 'hashie'
 module Refinery
   module Elasticsearch
     class Result
-      def initialize(attributes={})
+      def initialize(attributes = {})
         @result = Hashie::Mash.new(attributes)
       end
 
@@ -12,11 +12,15 @@ module Refinery
       end
 
       def klass
-        @klass ||= @result['_type'].gsub('-', '/').camelize.constantize
+        @klass ||= @result['_type'].tr('-', '/').camelize.constantize
       end
 
       def record
-        @record ||= klass.find(@result['_id'].to_i) rescue nil
+        @record ||= begin
+                      klass.find(@result['_id'].to_i)
+                    rescue
+                      nil
+                    end
       end
 
       # Delegate methods to `@result` or `@result._source`
@@ -36,11 +40,11 @@ module Refinery
       #
       def respond_to?(method_name, include_private = false)
         @result.respond_to?(method_name.to_sym) || \
-        @result._source && @result._source.respond_to?(method_name.to_sym) || \
-        super
+          @result._source && @result._source.respond_to?(method_name.to_sym) || \
+          super
       end
 
-      def as_json(options={})
+      def as_json(options = {})
         @result.as_json(options)
       end
     end

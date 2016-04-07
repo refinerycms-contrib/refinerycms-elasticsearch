@@ -1,8 +1,6 @@
 namespace :refinery do
-
   namespace :elasticsearch do
-
-    #Sets up logging - should only be called from other rake tasks
+    # Sets up logging - should only be called from other rake tasks
     task setup_logger: :environment do
       logger           = Logger.new(STDOUT)
       logger.level     = Logger::INFO
@@ -17,14 +15,12 @@ namespace :refinery do
 
     desc 'Recreate Elasticsearch index'
     task recreate: :setup_logger do
-      Refinery::Elasticsearch.setup_index(delete_first:true)
+      Refinery::Elasticsearch.setup_index(delete_first: true)
       Refinery::Elasticsearch.searchable_classes.each do |klass|
         STDOUT.write "  Regenerating #{klass} index... "
         klass.index_all
-        STDOUT.puts "done."
+        STDOUT.puts 'done.'
       end
     end
-
   end
-
 end

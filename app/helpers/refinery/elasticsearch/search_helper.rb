@@ -7,10 +7,10 @@ module Refinery
 
       def result_icon(result)
         icon = case result.klass.name
-        when 'Refinery::Image' then 'photo'
-        when 'Refinery::Resource' then 'save'
-        else 'page'
-        end
+               when 'Refinery::Image' then 'photo'
+               when 'Refinery::Resource' then 'save'
+               else 'page'
+               end
         "<i class=\"fi-#{icon}\"></i>".html_safe
       end
 
@@ -30,9 +30,9 @@ module Refinery
       end
 
       def result_highlight(result)
-        content_tag :div, class:'preview' do
+        content_tag :div, class: 'preview' do
           result.highlight.collect do |field, highlights|
-            content_tag :span, class:field do
+            content_tag :span, class: field do
               highlights.join(' … ').html_safe
             end
           end.join(', ').html_safe
@@ -44,7 +44,7 @@ module Refinery
       end
 
       def result_score(result, results)
-        ( result._score / results.max_score * 100.0 ).round
+        (result._score / results.max_score * 100.0).round
       end
     end
   end

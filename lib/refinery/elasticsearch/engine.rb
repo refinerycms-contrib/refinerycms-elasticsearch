@@ -1,7 +1,6 @@
 module Refinery
   module Elasticsearch
     class Engine < Rails::Engine
-
       include Refinery::Engine
 
       engine_name :refinery_elasticsearch
@@ -17,7 +16,7 @@ module Refinery
         end
       end
 
-      initializer "refinery.elasticsearch" do
+      initializer 'refinery.elasticsearch' do
         ::Refinery::Elasticsearch.config.es_logger = Rails.logger
       end
 

@@ -1,5 +1,5 @@
 if defined?(Refinery::ActsAsIndexed::Engine)
-  raise "Please remove the refinery-acts-as-indexed gem to use elasticsearch."
+  raise 'Please remove the refinery-acts-as-indexed gem to use elasticsearch.'
 end
 
 module Refinery
@@ -10,8 +10,8 @@ module Refinery
   end
 
   class SearchEngine
-    def self.search(query, page = 1)
-      raise "Unfinished!"
+    def self.search(_query, _page = 1)
+      raise 'Unfinished!'
     end
   end
 

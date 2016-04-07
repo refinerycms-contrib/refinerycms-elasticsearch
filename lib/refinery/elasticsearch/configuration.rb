@@ -17,10 +17,8 @@ module Refinery
 
     self.page_url = '/search'
     self.results_per_page = 10
-    self.enable_for = %w{ Refinery::Page Refinery::Image Refinery::Resource }
+    self.enable_for = %w( Refinery::Page Refinery::Image Refinery::Resource )
 
-    if defined?(Refinery::Blog)
-      self.enable_for << 'Refinery::Blog::Post'
-    end
+    enable_for << 'Refinery::Blog::Post' if defined?(Refinery::Blog)
   end
 end

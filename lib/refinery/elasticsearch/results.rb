@@ -9,11 +9,11 @@ module Refinery
       DEFAULTS = {
         page_size: Refinery::Elasticsearch.results_per_page,
         page: 1
-      }
+      }.freeze
 
       delegate :each, :empty?, :size, :slice, :[], :to_ary, to: :results
 
-      def initialize(response={}, opts={})
+      def initialize(response = {}, opts = {})
         @options = DEFAULTS.merge(opts)
         @response = response
         @page_size = @options[:page_size]
@@ -33,13 +33,10 @@ module Refinery
       end
 
       def total_pages
-        page_size>total ? 1 : (total / page_size) + 1
+        page_size > total ? 1 : (total / page_size) + 1
       end
 
-      def current_page
-        @current_page
-      end
-
+      attr_reader :current_page
     end
   end
 end

@@ -6,7 +6,6 @@ if Refinery::Elasticsearch.enable_for.include?('Refinery::Page')
       def update_page
         page.index_document
       end
-
     end
   rescue NameError
   end
