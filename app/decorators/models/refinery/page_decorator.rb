@@ -6,7 +6,7 @@ if Refinery::Elasticsearch.enable_for.include?('Refinery::Page')
       define_mapping do
         {
           title: { type: 'string' },
-          browser_title: { type: 'string' },
+          browser_title: { type: 'string', analyzer: 'snowball' },
           menu_title: { type: 'string' },
           meta_description: { type: 'string' },
           part: {
@@ -34,7 +34,7 @@ if Refinery::Elasticsearch.enable_for.include?('Refinery::Page')
       end
 
       def self.indexable
-        live.in_menu
+        live
       end
     end
   rescue NameError
