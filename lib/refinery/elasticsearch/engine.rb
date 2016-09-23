@@ -30,3 +30,5 @@ module Refinery
     end
   end
 end
+
+require 'refinery/elasticsearch/crud'
