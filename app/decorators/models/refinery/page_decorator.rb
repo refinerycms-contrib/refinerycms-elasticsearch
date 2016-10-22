@@ -9,6 +9,7 @@ if Refinery::Elasticsearch.enable_for.include?('Refinery::Page')
           browser_title: { type: 'string', analyzer: 'snowball' },
           menu_title: { type: 'string' },
           meta_description: { type: 'string' },
+          custom_teaser: { type: 'string', analyzer: 'snowball' },
           part: {
             type: 'object',
             properties: {
@@ -25,6 +26,7 @@ if Refinery::Elasticsearch.enable_for.include?('Refinery::Page')
         {
           title: title,
           part: parts.map { |part| { body: strip_tags(part.body) } },
+          custom_teaser: custom_teaser,
           browser_title: browser_title,
           menu_title: menu_title,
           meta_description: meta_description,
