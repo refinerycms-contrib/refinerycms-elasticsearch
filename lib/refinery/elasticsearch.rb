@@ -77,6 +77,7 @@ module Refinery
           log :debug, "Query body: #{body}"
           client.search(
             index: index_name,
+            type: opts[:type],
             from: ((opts[:page] - 1) * opts[:per_page]),
             size: opts[:per_page],
             body: body

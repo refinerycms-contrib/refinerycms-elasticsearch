@@ -15,6 +15,9 @@ namespace :refinery do
 
     desc 'Recreate Elasticsearch index'
     task recreate: :setup_logger do
+      # Use the right language
+      ::I18n.locale = ::I18n.default_locale
+
       Refinery::Elasticsearch.setup_index(delete_first: true)
       Refinery::Elasticsearch.searchable_classes.each do |klass|
         STDOUT.write "  Regenerating #{klass} index... "
