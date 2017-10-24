@@ -30,6 +30,17 @@ if Refinery::Elasticsearch.enable_for.include?('Refinery::Blog::Post')
       def self.indexable
         live
       end
+
+      # Posts should not remain indexed if draft attribute is set to True.
+      # Remove them on update if needed
+      def handle_draft
+        if !live? && respond_to?(:to_index)
+          needs_update = !(previous_changes.keys.map(&:to_sym) && to_index.keys.map(&:to_sym)).empty?
+          delete_document if needs_update
+        end
+      end
+
+      after_commit :handle_draft, on: :update
     end
   rescue NameError
   end
